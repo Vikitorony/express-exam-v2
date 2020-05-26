@@ -1,0 +1,42 @@
+version: "2"
+services:
+  express-exam-v2-db:
+    container_name: express-exam-v2-db
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: "database"
+      MYSQL_USER: "database"
+      MYSQL_PASSWORD: "toor"
+      MYSQL_ROOT_PASSWORD: "toor"
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    volumes:
+      - express-exam-v2-db-data:/var/lib/mysql
+    networks:
+      inner:
+        aliases:
+          - express-exam-v2-db
+  express-exam-v2:
+    container_name: express-exam-v2
+    build:
+      context: ./
+      dockerfile: Dockerfile.development
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - express-exam-v2-db
+    volumes:
+      - "./:/usr/src/app"
+      - "~/.ssh:/root/.ssh"
+    networks:
+      inner:
+        aliases:
+          - express-exam-v2
+networks:
+  inner: {}
+volumes:
+  express-exam-v2-db-data: {}
